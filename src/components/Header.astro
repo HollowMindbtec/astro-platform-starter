@@ -2,24 +2,33 @@
 import Logo from '../components/Logo.astro';
 
 const navItems = [
-    { linkText: 'Home', href: '/' },
-    { linkText: 'Revalidation', href: '/revalidation' },
-    { linkText: 'Image CDN', href: '/image-cdn' },
-    { linkText: 'Edge Function', href: '/edge' },
-    { linkText: 'Blobs', href: '/blobs' }
+    { linkText: 'Dashboard', href: '/' },
+    { linkText: 'Data Pipeline', href: '/pipeline' },
+    { linkText: 'Vectra-Net NAS', href: '/vectra-net' },
+    { linkText: 'Comparison', href: '/comparison' },
+    { linkText: 'Monitoring', href: '/monitoring' },
+    { linkText: 'Results', href: '/results' }
 ];
+
+const currentPath = Astro.url.pathname;
 ---
 
-<nav class="flex flex-wrap items-center gap-4 pt-6 pb-16 sm:pt-12 sm:pb-24">
-    <a href="/">
-        <Logo />
+<nav class="flex flex-wrap items-center gap-4 pt-6 pb-8 sm:pt-10 sm:pb-12 border-b border-slate-800/60 mb-8">
+    <a href="/" class="no-underline hover:opacity-90 transition-opacity">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center text-white font-bold text-sm">VN</div>
+            <span class="font-bold text-white text-sm hidden sm:inline">Vectra-Net</span>
+        </div>
     </a>
     {
         !!navItems?.length && (
-            <ul class="flex flex-wrap gap-x-4 gap-y-1">
+            <ul class="flex flex-wrap gap-x-1 gap-y-1">
                 {navItems.map((item) => (
                     <li>
-                        <a href={item.href} class="inline-block px-1.5 py-1 sm:px-3 sm:py-2">
+                        <a
+                            href={item.href}
+                            class={`nav-link ${currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href)) ? 'active' : ''}`}
+                        >
                             {item.linkText}
                         </a>
                     </li>
