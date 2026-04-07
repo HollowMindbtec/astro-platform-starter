@@ -1,16 +1,22 @@
 @import 'tailwindcss';
 
 @theme {
-    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-primary: #f67280;
-    --color-primary-content: #101828;
-    --color-complementary: #355c7d;
+    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-primary: #00d4ff;
+    --color-primary-content: #0f172a;
+    --color-secondary: #7c3aed;
+    --color-accent: #10b981;
+    --color-danger: #ef4444;
+    --color-warning: #f59e0b;
+    --color-complementary: #0f172a;
+    --color-surface: #1e293b;
+    --color-surface-2: #334155;
     --background-image-noise: linear-gradient(
-            to bottom,
-            color-mix(in oklab, var(--color-gray-950) 0%, transparent),
-            color-mix(in oklab, var(--color-gray-950) 100%, transparent)
-        ),
-        url('/images/noise.png');
+        to bottom,
+        color-mix(in oklab, #0f172a 0%, transparent),
+        color-mix(in oklab, #0f172a 100%, transparent)
+    );
 }
 
 @layer base {
@@ -22,7 +28,7 @@
         @apply text-2xl font-bold sm:text-3xl;
     }
 
-    a:not(.btn) {
+    a:not(.btn):not(.nav-link) {
         @apply underline transition hover:opacity-80;
     }
 
@@ -31,12 +37,196 @@
     }
 
     :not(pre) > code {
-        @apply px-1 py-0.5 font-mono rounded bg-gray-900 text-primary;
+        @apply px-1 py-0.5 font-mono rounded bg-slate-900 text-cyan-400;
         font-size: 0.9em;
     }
 }
 
 @layer components {
+    /* Card styles */
+    .card {
+        @apply rounded-xl border border-slate-700 bg-slate-800/80 p-4 backdrop-blur;
+        box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.05), 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-glow {
+        @apply rounded-xl border border-slate-700 bg-slate-800/80 p-4 backdrop-blur;
+        box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.15), 0 4px 24px rgba(0, 212, 255, 0.08),
+            0 0 60px rgba(0, 212, 255, 0.04);
+    }
+
+    /* Status indicators */
+    .status-idle {
+        @apply inline-flex items-center gap-1.5 rounded-full bg-slate-700 px-2.5 py-0.5 text-xs font-medium text-slate-300;
+    }
+    .status-running {
+        @apply inline-flex items-center gap-1.5 rounded-full bg-yellow-900/60 px-2.5 py-0.5 text-xs font-medium text-yellow-300;
+    }
+    .status-complete {
+        @apply inline-flex items-center gap-1.5 rounded-full bg-emerald-900/60 px-2.5 py-0.5 text-xs font-medium text-emerald-300;
+    }
+    .status-error {
+        @apply inline-flex items-center gap-1.5 rounded-full bg-red-900/60 px-2.5 py-0.5 text-xs font-medium text-red-300;
+    }
+
+    .status-dot-idle {
+        @apply w-1.5 h-1.5 rounded-full bg-slate-400;
+    }
+    .status-dot-running {
+        @apply w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse;
+    }
+    .status-dot-complete {
+        @apply w-1.5 h-1.5 rounded-full bg-emerald-400;
+    }
+    .status-dot-error {
+        @apply w-1.5 h-1.5 rounded-full bg-red-400;
+    }
+
+    /* Table styles */
+    .data-table {
+        @apply w-full text-sm border-collapse;
+    }
+    .data-table th {
+        @apply bg-slate-900/80 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-700;
+    }
+    .data-table td {
+        @apply px-3 py-2 text-slate-300 border-b border-slate-800/60;
+    }
+    .data-table tr:hover td {
+        @apply bg-slate-700/30;
+    }
+    .data-table tr:nth-child(even) td {
+        @apply bg-slate-800/30;
+    }
+
+    /* Button variants */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 cursor-pointer text-center font-semibold no-underline transition-all rounded-lg;
+        padding: var(--btn-py, 0.625rem) var(--btn-px, 1rem);
+        font-size: var(--btn-font-size, 0.875rem);
+    }
+    .btn:disabled {
+        @apply opacity-40 cursor-not-allowed;
+    }
+
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 cursor-pointer text-center font-semibold no-underline transition-all rounded-lg bg-cyan-500 text-slate-900 hover:bg-cyan-400 active:bg-cyan-600;
+        padding: var(--btn-py, 0.625rem) var(--btn-px, 1rem);
+        font-size: var(--btn-font-size, 0.875rem);
+    }
+    .btn-primary:disabled { @apply opacity-40 cursor-not-allowed; }
+    .btn-success {
+        @apply inline-flex items-center justify-center gap-2 cursor-pointer text-center font-semibold no-underline transition-all rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 active:bg-emerald-700;
+        padding: var(--btn-py, 0.625rem) var(--btn-px, 1rem);
+        font-size: var(--btn-font-size, 0.875rem);
+    }
+    .btn-success:disabled { @apply opacity-40 cursor-not-allowed; }
+    .btn-danger {
+        @apply inline-flex items-center justify-center gap-2 cursor-pointer text-center font-semibold no-underline transition-all rounded-lg bg-red-600 text-white hover:bg-red-500 active:bg-red-700;
+        padding: var(--btn-py, 0.625rem) var(--btn-px, 1rem);
+        font-size: var(--btn-font-size, 0.875rem);
+    }
+    .btn-danger:disabled { @apply opacity-40 cursor-not-allowed; }
+    .btn-warning {
+        @apply inline-flex items-center justify-center gap-2 cursor-pointer text-center font-semibold no-underline transition-all rounded-lg bg-amber-500 text-slate-900 hover:bg-amber-400 active:bg-amber-600;
+        padding: var(--btn-py, 0.625rem) var(--btn-px, 1rem);
+        font-size: var(--btn-font-size, 0.875rem);
+    }
+    .btn-warning:disabled { @apply opacity-40 cursor-not-allowed; }
+    .btn-neutral {
+        @apply inline-flex items-center justify-center gap-2 cursor-pointer text-center font-semibold no-underline transition-all rounded-lg bg-slate-700 text-slate-200 hover:bg-slate-600 active:bg-slate-800 border border-slate-600;
+        padding: var(--btn-py, 0.625rem) var(--btn-px, 1rem);
+        font-size: var(--btn-font-size, 0.875rem);
+    }
+    .btn-neutral:disabled { @apply opacity-40 cursor-not-allowed; }
+    .btn-outline {
+        @apply inline-flex items-center justify-center gap-2 cursor-pointer text-center font-semibold no-underline transition-all rounded-lg border border-cyan-500 text-cyan-400 hover:bg-cyan-500/10;
+        padding: var(--btn-py, 0.625rem) var(--btn-px, 1rem);
+        font-size: var(--btn-font-size, 0.875rem);
+    }
+    .btn-outline:disabled { @apply opacity-40 cursor-not-allowed; }
+    .btn-lg {
+        --btn-font-size: 1rem;
+        --btn-px: 1.5rem;
+        --btn-py: 0.875rem;
+    }
+    .btn-sm {
+        --btn-font-size: 0.75rem;
+        --btn-px: 0.75rem;
+        --btn-py: 0.375rem;
+    }
+
+    /* Chart container */
+    .chart-container {
+        @apply relative w-full;
+        min-height: 250px;
+    }
+
+    /* Log panel */
+    .log-panel {
+        @apply rounded-lg bg-slate-950 border border-slate-800 p-4 font-mono text-xs overflow-y-auto;
+        max-height: 300px;
+    }
+    .log-ingestion {
+        @apply text-blue-400;
+    }
+    .log-profiling {
+        @apply text-purple-400;
+    }
+    .log-preprocessing {
+        @apply text-emerald-400;
+    }
+    .log-nas {
+        @apply text-orange-400;
+    }
+    .log-monitoring {
+        @apply text-red-400;
+    }
+    .log-info {
+        @apply text-slate-400;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+        @apply h-2 rounded-full bg-slate-700 overflow-hidden;
+    }
+    .progress-fill {
+        @apply h-full rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 transition-all duration-300;
+    }
+
+    /* Navigation */
+    .nav-link {
+        @apply px-3 py-2 rounded-lg text-sm font-medium text-slate-300 transition-all no-underline;
+    }
+    .nav-link:hover {
+        @apply bg-slate-800 text-cyan-400;
+    }
+    .nav-link.active {
+        @apply bg-cyan-500/10 text-cyan-400;
+    }
+
+    /* Section labels */
+    .section-label {
+        @apply text-xs font-semibold uppercase tracking-widest text-cyan-400/70 mb-3;
+    }
+
+    /* Pipeline node */
+    .pipeline-node {
+        @apply rounded-xl border border-slate-700 bg-slate-800/80 backdrop-blur flex flex-col items-center gap-2 p-4 cursor-pointer transition-all hover:border-cyan-500/50 hover:shadow-cyan-500/10;
+        min-width: 120px;
+    }
+    .pipeline-node.active {
+        @apply border-cyan-500/60 bg-cyan-500/5;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+    }
+    .pipeline-node.complete {
+        @apply border-emerald-500/60 bg-emerald-500/5;
+    }
+    .pipeline-node.error {
+        @apply border-red-500/60 bg-red-500/5;
+    }
+
+    /* Markdown */
     .markdown {
         > * {
             @apply my-6;
@@ -54,25 +244,75 @@
             @apply mb-0;
         }
     }
+}
 
-    .btn {
-        @apply inline-flex items-center justify-center gap-2 bg-primary text-primary-content cursor-pointer text-center font-semibold no-underline transition-colors;
-        padding: var(--btn-py, 0.875rem) var(--btn-px, 1.25rem);
-        font-size: var(--btn-font-size, 0.875rem);
-        border-radius: var(--btn-border-radius, 0.25rem);
-
-        &:hover {
-            @apply bg-primary/85;
-        }
-
-        &:disabled {
-            @apply text-gray-400 bg-gray-700;
-        }
+/* Animations */
+@keyframes pulse-glow {
+    0%,
+    100% {
+        box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
     }
-
-    .btn-lg {
-        --btn-font-size: 1.125rem;
-        --btn-px: 1.5rem;
-        --btn-py: 1.125rem;
+    50% {
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.7);
     }
+}
+
+@keyframes flow-right {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes spin-slow {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out both;
+}
+
+.animate-slide-in {
+    animation: slide-in 0.3s ease-out both;
+}
+
+.animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-flow {
+    animation: flow-right 1.5s linear infinite;
+}
+
+.animate-spin-slow {
+    animation: spin-slow 3s linear infinite;
 }
